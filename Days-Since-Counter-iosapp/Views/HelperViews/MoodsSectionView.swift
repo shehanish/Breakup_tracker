@@ -31,6 +31,8 @@ struct MoodsSectionView: View {
 
                 Button {
                     onApply(Array(selectedMoods).sorted())
+                    //Debug
+                    print("APPLY tapped. selectedMoods =", Array(selectedMoods).sorted())
                 } label: {
                     Text("Apply")
                         .fontWeight(.semibold)

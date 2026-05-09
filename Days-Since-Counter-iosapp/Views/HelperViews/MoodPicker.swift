@@ -20,6 +20,8 @@ struct MoodPicker: View {
                         isSelected: selectedMoods.contains(mood)
                     ) {
                         toggle(mood)
+                        //Debug 
+                        print("Toggled mood \(mood). Now selectedMoods =", Array(selectedMoods).sorted())
                     }
                 }
             }

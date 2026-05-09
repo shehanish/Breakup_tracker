@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
-import Charts
+import SwiftData
 
 struct HomeView: View {
+    
     private let period = ["30 Days", "60 Days", "90 Days", "Custom"]
     
     private let moods = [
@@ -16,6 +17,7 @@ struct HomeView: View {
         "Okay", "Hopeful", "Tired", "Lonely"
     ]
     
+    @Environment(\.modelContext) private var modelContext
     @State private var selectedMoods: Set<String> = []
     @State private var appliedMoods: [String] = []
     @State private var moodHistory: [MoodEntry] = []
@@ -53,11 +55,13 @@ struct HomeView: View {
                 
                 
                 
-                MoodsSectionView(moods: moods, selectedMoods: $selectedMoods) { applied in
-                    appliedMoods = applied
-                    moodHistory.insert(MoodEntry(date: .now, moods: applied), at: 0)
-                    
+                MoodsSectionView(moods: moods, selectedMoods: $selectedMoods) { appliedMoods in
+                    // handle apply
                 }
+                   
+                  
+                  
+                
                 .padding(.horizontal)
                 .padding(.bottom, 30)
                 

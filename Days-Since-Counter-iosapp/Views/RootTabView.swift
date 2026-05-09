@@ -6,32 +6,35 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct RootTabView: View {
+    
     var body: some View {
         
-            TabView {
-                HomeView()
-                    .tabItem { Label("Home", systemImage: "house") }
-                Spacer()
-                CounterView()
-                    .tabItem {
-                        Image(systemName: "gear")
-                        Text("Settings")
-                        
-                    }
-                Spacer()
-                Text("Profile")
-                    .tabItem {
-                        Image(systemName: "person")
-                        Text("Profile")
-                        
-                    }
-            
-            
-        }
-          
-        
+        MoodSwiftDataTestView()
+            .modelContainer(for: [MoodEntry.self], inMemory: true)
+        /*
+         TabView {
+         HomeView()
+         .tabItem { Label("Home", systemImage: "house") }
+         Spacer()
+         CounterView()
+         .tabItem {
+         Image(systemName: "gear")
+         Text("Settings")
+         
+         }
+         Spacer()
+         Text("Profile")
+         .tabItem {
+         Image(systemName: "person")
+         Text("Profile")
+         
+         }
+         }
+         
+         }*/
     }
 }
 

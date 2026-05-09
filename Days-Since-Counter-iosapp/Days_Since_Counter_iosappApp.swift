@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct Days_Since_Counter_iosappApp: App {
@@ -13,5 +14,9 @@ struct Days_Since_Counter_iosappApp: App {
         WindowGroup {
             RootTabView()
         }
+        .modelContainer(for:
+            [MoodEntry.self]
+        )
+        
     }
 }
