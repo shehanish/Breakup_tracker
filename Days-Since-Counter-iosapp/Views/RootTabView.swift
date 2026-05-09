@@ -12,9 +12,9 @@ struct RootTabView: View {
     
     var body: some View {
         
-        MoodSwiftDataTestView()
-            .modelContainer(for: [MoodEntry.self], inMemory: true)
-        /*
+        //MoodSwiftDataTestView()
+            //.modelContainer(for: [MoodEntry.self], inMemory: true)
+        
          TabView {
          HomeView()
          .tabItem { Label("Home", systemImage: "house") }
@@ -34,7 +34,7 @@ struct RootTabView: View {
          }
          }
          
-         }*/
+         
     }
 }
 
