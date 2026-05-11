@@ -9,15 +9,10 @@ import SwiftUI
 import SwiftData
 
 struct HomeView: View {
-
-   
     private let moods = [
         "Calm", "Sad", "Angry", "Anxious",
         "Okay", "Hopeful", "Tired", "Lonely", "Empty"
     ]
-
-
-    
 
     @State private var vm: HomeViewModel
 
@@ -25,7 +20,6 @@ struct HomeView: View {
         _vm = State(initialValue: vm)
     }
     
- 
     var body: some View {
         ZStack {
             LinearGradient(
@@ -70,7 +64,8 @@ struct HomeView: View {
                                         .foregroundStyle(.red)
                                         .padding(.horizontal)
                                 }
-          
+                
+
             }
         }
     }
