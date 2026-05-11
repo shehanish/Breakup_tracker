@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct MoodPickerView: View {
-    let moods: [String] = ["Calm", "Sad", "Angry", "Anxious", "Okay", "Hopeful", "Tired", "Lonely"]
+    let moods: [String] = ["Calm", "Sad", "Angry", "Anxious", "Okay", "Hopeful", "Tired", "Lonely", "Empty"]
     @Binding var selectedMoods: Set<String>
 
     var body: some View {

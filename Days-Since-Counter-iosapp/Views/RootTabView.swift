@@ -9,38 +9,27 @@ import SwiftUI
 import SwiftData
 
 struct RootTabView: View {
-    
     @Environment(\.modelContext) private var modelContext
-    
+
     var body: some View {
-        
-        //MoodSwiftDataTestView()
-            //.modelContainer(for: [MoodEntry.self], inMemory: true)
+        // Create dependencies once per body evaluation (ok for now)
         let moodRepo = SwiftDataMoodRepository(context: modelContext)
-        
-         TabView {
-             HomeView(moodRepo: moodRepo)
-         .tabItem { Label("Home", systemImage: "house") }
-         Spacer()
-         CounterView()
-         .tabItem {
-         Image(systemName: "gear")
-         Text("Settings")
-         
-         }
-         Spacer()
-         Text("Profile")
-         .tabItem {
-         Image(systemName: "person")
-         Text("Profile")
-         
-         }
-         }
-         
-         
+        let homeVM = HomeViewModel(moodRepo: moodRepo, userID: "local-debug-user")
+
+        TabView {
+            HomeView(vm: homeVM)
+                .tabItem { Label("Home", systemImage: "house") }
+
+            CounterView()
+                .tabItem { Label("Settings", systemImage: "gear") }
+
+            Text("Profile")
+                .tabItem { Label("Profile", systemImage: "person") }
+        }
     }
 }
 
 #Preview {
     RootTabView()
+        .modelContainer(for: [MoodEntry.self], inMemory: true)
 }
