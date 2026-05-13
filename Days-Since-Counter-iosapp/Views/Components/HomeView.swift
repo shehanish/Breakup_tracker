@@ -8,6 +8,13 @@
 import SwiftUI
 import SwiftData
 
+// MARK: - Preview-only AI service (kept outside #Preview to avoid macro issues)
+private struct PreviewAIInsightService: AIInsightService {
+    func generateMoodInsight(from input: MoodInsightInput) async throws -> String {
+        "Preview: Your mood today looks steady. (Not medical advice.)"
+    }
+}
+
 struct HomeView: View {
     private let moods = [
         "Calm", "Sad", "Angry", "Anxious",
@@ -19,7 +26,7 @@ struct HomeView: View {
     init(vm: HomeViewModel) {
         _vm = State(initialValue: vm)
     }
-    
+
     var body: some View {
         ZStack {
             LinearGradient(
@@ -33,39 +40,36 @@ struct HomeView: View {
             )
             .ignoresSafeArea()
 
-            VStack(spacing: 30) {
-                Image("feelings")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 250, height: 200)
-                    .padding(.top, -220)
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing: 30) {
+                    Image("feelings")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 250, height: 200)
+                        .padding(.top, 20)
 
-                Text("Good evening, Shehani!")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .padding(.top, -50)
-                    .foregroundStyle(Color.brandPrimary)
+                    Text("Good evening, Shehani!")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .foregroundStyle(Color.brandPrimary)
 
-                Text("Let's unpack the day slowly.. together..")
-                    .font(.subheadline)
-                    .padding(.top, -30)
-                    .foregroundStyle(Color.brandPrimary)
+                    Text("Let's unpack the day slowly.. together..")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.brandPrimary)
 
-                MoodsSectionView(moods: moods, selectedMoods: $vm.selectedMoods) { _ in
-                                    // Only trigger VM action; VM owns logic now
-                                    Task { await vm.apply() }
-                                }
-                                .padding(.horizontal)
-                                .padding(.bottom, 30)
+                    MoodsSectionView(moods: moods, selectedMoods: $vm.selectedMoods) { _ in
+                        Task { await vm.apply() }
+                    }
+                    .padding(.horizontal)
 
-                                if let err = vm.lastError {
-                                    Text("Error: \(err)")
-                                        .font(.footnote)
-                                        .foregroundStyle(.red)
-                                        .padding(.horizontal)
-                                }
-                
-
+                    if let err = vm.lastError {
+                        Text("Error: \(err)")
+                            .font(.footnote)
+                            .foregroundStyle(.red)
+                            .padding(.horizontal)
+                    }
+                }
+                .padding(.bottom, 80) // space above the tab bar
             }
         }
     }
@@ -77,7 +81,12 @@ struct HomeView: View {
     let context = ModelContext(container)
 
     let repo = SwiftDataMoodRepository(context: context)
-    let vm = HomeViewModel(moodRepo: repo, userID: "preview-user")
 
-    return HomeView(vm: vm)
+    let vm = HomeViewModel(
+        moodRepo: repo,
+        aiService: PreviewAIInsightService(),
+        userID: "preview-user"
+    )
+
+    HomeView(vm: vm)
 }
