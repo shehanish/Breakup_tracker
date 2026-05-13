@@ -28,12 +28,7 @@ struct CounterView: View {
             .ignoresSafeArea()
 
             VStack(spacing: 30) {
-                Image("kalito 1")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 300, height: 300)
-                    .padding(.top, -100)
-
+               
                 Text("You can do this!")
                     .font(.largeTitle)
                     .fontWeight(.bold)

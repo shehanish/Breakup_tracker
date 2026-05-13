@@ -12,25 +12,30 @@ import Observation
 @MainActor
 @Observable
 final class HomeViewModel {
-
+    // Text note user can type
+    var notesText: String = ""
+    //Debug
+    var lastSavedDebugText: String?
+    //AI Strings
+    var todayInsightText: String? = "You’re doing your best. Healing isn’t linear—take one small step today. (Not medical advice.)"
+    var isGeneratingTodayInsight: Bool = false
+    
     private let moodRepo: any MoodRepository
-    private let aiService: AIInsightService
+    private let aiService: any AIInsightService
     private let userID: String
     private let calendar: Calendar
 
     // Ephemeral UI state
     var selectedMoods: Set<String> = []
 
-    // AI insight UI state (today)
-    var todayInsightText: String?
-    var isGeneratingTodayInsight: Bool = false
+    
 
     // Error state (repo or AI)
     var lastError: String?
 
     init(
         moodRepo: any MoodRepository,
-        aiService: AIInsightService,
+        aiService: any AIInsightService,
         userID: String,
         calendar: Calendar = .current
     ) {
@@ -41,23 +46,40 @@ final class HomeViewModel {
     }
 
     // Derived UI state
-    var canApply: Bool { !selectedMoods.isEmpty }
+    var canApply: Bool { true }
+
 
     // User action: save mood entry
     func apply() async {
         let applied = Array(selectedMoods).sorted()
 
+        let trimmed = notesText.trimmingCharacters(in: .whitespacesAndNewlines)
+        let notesOrNil: String? = trimmed.isEmpty ? nil : trimmed
+
         do {
             try await moodRepo.addMoodEntry(
                 userID: userID,
+                notes: notesOrNil,
                 moods: applied,
                 timestamp: .now
             )
 
+            // Debug verify saved
+            if let latest = try await moodRepo.fetchLatestMoodEntry(userID: userID) {
+                let dbg = """
+                SAVED ✅
+                time: \(latest.timestamp)
+                moods: \(latest.moods)
+                notes: \(latest.notes ?? "nil")
+                """
+                lastSavedDebugText = dbg
+                print(dbg)
+            }
+
             selectedMoods.removeAll()
+            notesText = ""
             lastError = nil
 
-            // Refresh today's insight after logging
             await generateInsightForToday()
         } catch {
             lastError = String(describing: error)
@@ -69,6 +91,12 @@ final class HomeViewModel {
         guard !isGeneratingTodayInsight else { return }
 
         isGeneratingTodayInsight = true
+        todayInsightText = "Thinking…"   // show text immediately
+        lastError = nil
+
+        // Artificial pause so the user sees the loading state
+        try? await Task.sleep(nanoseconds: 700_000_000) // 0.7s
+
         defer { isGeneratingTodayInsight = false }
 
         do {
@@ -81,7 +109,6 @@ final class HomeViewModel {
                 to: now
             )
 
-            // Aggregate today's moods
             var counts: [String: Int] = [:]
             for entry in entries {
                 for mood in entry.moods {
@@ -89,10 +116,9 @@ final class HomeViewModel {
                 }
             }
 
-            // If no moods logged today, you can show a local message (no AI call)
+            // If no moods logged today, keep a general supportive message (no AI call)
             guard !counts.isEmpty else {
-                todayInsightText = "Log your mood to get a short reflection here. (Not medical advice.)"
-                lastError = nil
+                todayInsightText = "If today feels heavy, try one gentle thing: water, a walk, or texting someone safe. (Not medical advice.)"
                 return
             }
 
@@ -103,9 +129,9 @@ final class HomeViewModel {
             )
 
             todayInsightText = try await aiService.generateMoodInsight(from: input)
-            lastError = nil
         } catch {
             lastError = String(describing: error)
+            todayInsightText = "Something went wrong generating your reflection. Try again in a moment."
         }
     }
 }

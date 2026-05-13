@@ -12,14 +12,16 @@ import SwiftData
 @Model
 final class MoodEntry {
     var userID: String
-    var id: UUID
     var timestamp: Date
     var moods: [String]
-    
-    init(userID: String, id: UUID = UUID(), timestamp: Date = .now, moods: [String] = []) {
+
+    // NEW
+    var notes: String?
+
+    init(userID: String, timestamp: Date = .now, moods: [String], notes: String? = nil) {
         self.userID = userID
-        self.id = id
         self.timestamp = timestamp
         self.moods = moods
+        self.notes = notes
     }
 }

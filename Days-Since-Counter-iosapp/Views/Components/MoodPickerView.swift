@@ -42,11 +42,11 @@ struct MoodPickerView: View {
                         .padding(.horizontal, 14)
                         .foregroundStyle(isSelected ? .black : .primary)
                         .background(
-                            Capsule()
+                            RoundedRectangle(cornerRadius: 14)
                                 .fill(isSelected ? Color.lavender.opacity(0.75) : Color.white.opacity(0.6))
                         )
                         .overlay(
-                            Capsule()
+                            RoundedRectangle(cornerRadius: 14)
                                 .strokeBorder(Color.lavender.opacity(0.08), lineWidth: 1)
                         )
                     }

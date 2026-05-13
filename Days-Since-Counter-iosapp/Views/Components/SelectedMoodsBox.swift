@@ -27,16 +27,17 @@ struct SelectedMoodsBox: View {
                             .padding(.vertical, 6)
                             .padding(.horizontal, 10)
                             .background(Color.lavender.opacity(1.0))
-                            .clipShape(Capsule())
+                            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                             
                     }
                     
                 }
             }
         }
+        
         .padding(14)
         .background(.white.opacity(0.55))
-        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 }
 

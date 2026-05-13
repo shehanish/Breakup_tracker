@@ -8,13 +8,7 @@
 import Foundation
 
 protocol MoodRepository {
-    func addMoodEntry(userID: String, moods: [String], timestamp: Date) async throws
-
-    func fetchMoodEntries(
-        userID: String,
-        from startDate: Date,
-        to endDate: Date
-    ) async throws -> [MoodEntry]
-
+    func addMoodEntry(userID: String, notes: String?, moods: [String], timestamp: Date) async throws
+    func fetchMoodEntries(userID: String, from startDate: Date, to endDate: Date) async throws -> [MoodEntry]
     func fetchLatestMoodEntry(userID: String) async throws -> MoodEntry?
 }

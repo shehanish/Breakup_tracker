@@ -21,11 +21,20 @@ final class SwiftDataMoodRepository: MoodRepository {
         self.context = context
     }
 
-    func addMoodEntry(userID: String, moods: [String], timestamp: Date = .now) async throws {
-        let entry = MoodEntry(userID: userID, timestamp: timestamp, moods: moods)
+    func addMoodEntry(
+        userID: String,
+        notes: String?,
+        moods: [String],
+        timestamp: Date = .now
+    ) async throws {
+        let entry = MoodEntry(
+            userID: userID,
+            timestamp: timestamp,
+            moods: moods,
+            notes: notes
+        )
         context.insert(entry)
         try context.save()
-    
     }
 
     func fetchMoodEntries(userID: String, from startDate: Date, to endDate: Date) async throws -> [MoodEntry] {
