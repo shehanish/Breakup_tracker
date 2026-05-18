@@ -87,11 +87,11 @@ struct ChatView: View {
                     }) {
                         Image(systemName: "arrow.up")
                             .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(.white)
+                            .foregroundColor(Color.textOnPrimary)
                             .frame(width: 44, height: 44)
                             .background(
                                 vm.inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-                                ? Color.brandPrimary.opacity(0.5)
+                                ? Color.brandPrimary.opacity(0.3)
                                 : Color.brandPrimary
                             )
                             .clipShape(Circle())
@@ -116,7 +116,7 @@ struct MessageBubble: View {
                 Text(message.text)
                     .padding(14)
                     .background(Color.brandPrimary)
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.textOnPrimary)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                     // Nice tailored corners for user message
                     .cornerRadius(4, corners: [.bottomRight])
