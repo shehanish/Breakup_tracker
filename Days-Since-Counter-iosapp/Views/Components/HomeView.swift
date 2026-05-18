@@ -22,9 +22,11 @@ struct HomeView: View {
     ]
 
     @State private var vm: HomeViewModel
+    @Binding var selectedTab: Int
 
-    init(vm: HomeViewModel) {
+    init(vm: HomeViewModel, selectedTab: Binding<Int>) {
         _vm = State(initialValue: vm)
+        _selectedTab = selectedTab
     }
 
     var body: some View {
@@ -82,20 +84,43 @@ struct HomeView: View {
 
                     // AI bubble (always visible if you set default text)
                     if let insight = vm.todayInsightText, !insight.isEmpty {
-                        AIInsightBubbleView(text: insight, avatarSystemImage: "person.crop.circle.fill")
+                        VStack(spacing: 16) {
+                            AIInsightBubbleView(text: insight, avatarSystemImage: "person.crop.circle.fill")
+                            
+                            Button(action: {
+                                // Redirection to Chat Tab
+                                selectedTab = 1
+                            }) {
+                                HStack {
+                                    Image(systemName: "bubble.left.and.bubble.right.fill")
+                                    Text("I'm here to listen, let's chat")
+                                        .fontWeight(.semibold)
+                                }
+                                .padding(.horizontal, 22)
+                                .padding(.vertical, 14)
+                                .background(Color.white.opacity(0.8))
+                                .foregroundStyle(Color.brandPrimary)
+                                .clipShape(Capsule())
+                                .overlay(
+                                    Capsule()
+                                        .stroke(Color.brandPrimary.opacity(0.3), lineWidth: 1)
+                                )
+                                .shadow(color: .black.opacity(0.04), radius: 6, x: 0, y: 3)
+                            }
+                        }
                     }
 
-                    // Debug View - Remove it later!!!
-                    if let dbg = vm.lastSavedDebugText {
-                        Text(dbg)
-                            .font(.footnote)
-                            .foregroundStyle(.black.opacity(0.7))
-                            .padding()
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(.white.opacity(0.6))
-                            .clipShape(RoundedRectangle(cornerRadius: 14))
-                            .padding(.horizontal)
-                    }
+                    // // Debug View - Remove it later!!!
+                    // if let dbg = vm.lastSavedDebugText {
+                    //     Text(dbg)
+                    //         .font(.footnote)
+                    //         .foregroundStyle(.black.opacity(0.7))
+                    //         .padding()
+                    //         .frame(maxWidth: .infinity, alignment: .leading)
+                    //         .background(.white.opacity(0.6))
+                    //         .clipShape(RoundedRectangle(cornerRadius: 14))
+                    //         .padding(.horizontal)
+                    // }
 
                     if let err = vm.lastError {
                         Text("Error: \(err)")
@@ -128,6 +153,6 @@ struct HomeView: View {
         userID: "preview-user"
     )
 
-    HomeView(vm: vm)
+    HomeView(vm: vm, selectedTab: .constant(0))
 }
 

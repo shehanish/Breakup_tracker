@@ -13,6 +13,7 @@ import SwiftData
 
 struct RootTabView: View {
     @Environment(\.modelContext) private var modelContext
+    @State private var selectedTab: Int = 0
 
     private let userID = "local-debug-user"
 
@@ -35,15 +36,18 @@ struct RootTabView: View {
 
         ZStack {
             
-            TabView {
-                HomeView(vm: homeVM)
+            TabView(selection: $selectedTab) {
+                HomeView(vm: homeVM, selectedTab: $selectedTab)
                     .tabItem { Label("Today", systemImage: "calendar") }
+                    .tag(0)
 
                 Text("Chat")
                     .tabItem { Label("Chat", systemImage: "bubble.left.and.bubble.right") }
+                    .tag(1)
 
                 CounterView()
                     .tabItem { Label("No Contact", systemImage: "clock") }
+                    .tag(2)
             }
             .tint(Color.brandPrimary)
             
