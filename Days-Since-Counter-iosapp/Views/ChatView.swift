@@ -17,16 +17,8 @@ struct ChatView: View {
     var body: some View {
         ZStack {
             // Match the background gradient from HomeView
-            LinearGradient(
-                colors: [
-                    Color(red: 0.98, green: 0.88, blue: 0.94),
-                    Color(red: 0.92, green: 0.85, blue: 0.97),
-                    Color(red: 0.88, green: 0.82, blue: 0.96)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
+            Color.appBackgroundGradient
+                .ignoresSafeArea()
 
             VStack(spacing: 0) {
                 // Header
