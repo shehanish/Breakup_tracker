@@ -54,7 +54,6 @@ struct OpenAIInsightService: AIInsightService {
         Please provide supportive and kind words acknowledging how they feel. 
         Always include exactly one gentle, actionable suggestion they can do today based on their input.
         Do NOT diagnose, do NOT mention mental disorders, do NOT give medical instructions.
-        End the message with: "(Not medical advice.)"
 
         Time range: \(iso8601(input.startDate)) to \(iso8601(input.endDate))
         Mood counts: \(input.moodCounts)
@@ -107,7 +106,7 @@ struct OpenAIInsightService: AIInsightService {
         let decoded = try JSONDecoder().decode(ChatCompletionsResponse.self, from: data)
         let text = decoded.choices.first?.message.content.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        return text?.isEmpty == false ? text! : "No insight returned. (Not medical advice.)"
+        return text?.isEmpty == false ? text! : "No insight returned."
     }
 
     // MARK: - Helpers

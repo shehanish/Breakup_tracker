@@ -12,12 +12,12 @@ import Observation
 @MainActor
 @Observable
 final class HomeViewModel {
-    // Text note user can type
+    //Text note user can type
     var notesText: String = ""
     //Debug
     var lastSavedDebugText: String?
     //AI Strings
-    var todayInsightText: String? = "You’re doing your best. Healing isn’t linear—take one small step today. (Not medical advice.)"
+    var todayInsightText: String? = "You’re doing your best. Healing isn’t linear—take one small step today."
     var isGeneratingTodayInsight: Bool = false
     
     private let moodRepo: any MoodRepository
@@ -122,7 +122,7 @@ final class HomeViewModel {
 
             // If no moods logged today, keep a general supportive message (no AI call)
             guard !counts.isEmpty || !allNotes.isEmpty else {
-                todayInsightText = "If today feels heavy, try one gentle thing: water, a walk, or texting someone safe. (Not medical advice.)"
+                todayInsightText = "If today feels heavy, try one gentle thing: water, a walk, or texting someone safe."
                 return
             }
 

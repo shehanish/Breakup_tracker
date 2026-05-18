@@ -11,7 +11,7 @@ import SwiftData
 // MARK: - Preview-only AI service (kept outside #Preview to avoid macro issues)
 private struct PreviewAIInsightService: AIInsightService {
     func generateMoodInsight(from input: MoodInsightInput) async throws -> String {
-        "Preview: Your mood today looks steady. (Not medical advice.)"
+        "Preview: Your mood today looks steady."
     }
 }
 

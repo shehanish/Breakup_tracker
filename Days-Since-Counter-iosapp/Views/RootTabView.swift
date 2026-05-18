@@ -58,7 +58,7 @@ struct RootTabView: View {
 // MARK: - Stub AI service (safe until you wire OpenAI key)
 private struct PreviewAIInsightService: AIInsightService {
     func generateMoodInsight(from input: MoodInsightInput) async throws -> String {
-        "You're making progress—log a mood to see insights. (Not medical advice.)"
+        "You're making progress—log a mood to see insights."
     }
 }
 
