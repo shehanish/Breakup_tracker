@@ -41,7 +41,7 @@ struct RootTabView: View {
                     .tabItem { Label("Today", systemImage: "calendar") }
                     .tag(0)
 
-                Text("Chat")
+                ChatView()
                     .tabItem { Label("Chat", systemImage: "bubble.left.and.bubble.right") }
                     .tag(1)
 
