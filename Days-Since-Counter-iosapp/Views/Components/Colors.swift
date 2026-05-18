@@ -25,33 +25,17 @@ extension Color {
     static let bridalBlue = Color(red: 233/255, green: 243/255, blue: 255/255)  // #e9f3ff
     
     // MARK: - Brand Colors
-    // Midnight in light mode / Bridal Blue in dark mode for crisp contrast
-    static let brandPrimary = Color(
-        light: midnight,
-        dark: bridalBlue
-    )
+    // Force Sapphire for UI elements
+    static let brandPrimary = sapphire
     
-    // Auto-contrasts against brandPrimary
-    static let textOnPrimary = Color(
-        light: lace,
-        dark: midnight
-    )
+    // Force Petal for texts on primary
+    static let textOnPrimary = petal
     
     // MARK: - App Background Gradient
-    // Light Mode: Warming sunrise (Lace -> Bridal Blue -> Petal)
-    // Dark Mode: Deep dusk (Midnight -> Deeper Midnight -> Sapphire blend)
-    static let bgTop = Color(
-        light: lace,
-        dark: Color(red: 5/255, green: 13/255, blue: 45/255) // Even darker than midnight
-    )
-    static let bgMiddle = Color(
-        light: bridalBlue,
-        dark: midnight
-    )
-    static let bgBottom = Color(
-        light: petal,
-        dark: sapphire.opacity(0.3) // Soft fade into Sapphire
-    )
+    // Forced Midnight background across the entire app
+    static let bgTop = midnight
+    static let bgMiddle = midnight
+    static let bgBottom = midnight
     
     static let appBackgroundGradient = LinearGradient(
         colors: [bgTop, bgMiddle, bgBottom],

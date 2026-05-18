@@ -132,8 +132,8 @@ struct MessageBubble: View {
 
                 Text(message.text)
                     .padding(14)
-                    .background(Color.white.opacity(0.85))
-                    .foregroundColor(Color.black.opacity(0.8))
+                    .background(Color.sapphire.opacity(0.2))
+                    .foregroundColor(Color.petal)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                     // Nice tailored corners for AI message
                     .cornerRadius(4, corners: [.bottomLeft])

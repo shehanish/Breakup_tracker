@@ -25,9 +25,9 @@ struct AIInsightBubbleView: View {
 
             Text(text)
                 .font(.subheadline)
-                .foregroundStyle(.black.opacity(0.85))
+                .foregroundStyle(Color.petal)
                 .padding(12)
-                .background(Color.white.opacity(0.75))
+                .background(Color.sapphire.opacity(0.3))
                 .overlay(
                     RoundedRectangle(cornerRadius: 16)
                         .stroke(Color.brandPrimary.opacity(0.25), lineWidth: 1)
