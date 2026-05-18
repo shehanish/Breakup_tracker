@@ -41,7 +41,7 @@ struct RootTabView: View {
                     .tabItem { Label("Today", systemImage: "calendar") }
                     .tag(0)
 
-                ChatView()
+                ChatView(aiService: aiService)
                     .tabItem { Label("Chat", systemImage: "bubble.left.and.bubble.right") }
                     .tag(1)
 
@@ -63,6 +63,9 @@ struct RootTabView: View {
 private struct PreviewAIInsightService: AIInsightService {
     func generateMoodInsight(from input: MoodInsightInput) async throws -> String {
         "You're making progress—log a mood to see insights."
+    }
+    func generateChatResponse(conversation: [(isUser: Bool, text: String)]) async throws -> String {
+        "I'm here for you. Take things one day at a time."
     }
 }
 

@@ -13,6 +13,9 @@ private struct PreviewAIInsightService: AIInsightService {
     func generateMoodInsight(from input: MoodInsightInput) async throws -> String {
         "Preview: Your mood today looks steady."
     }
+    func generateChatResponse(conversation: [(isUser: Bool, text: String)]) async throws -> String {
+        "Preview: I hear you. Take things one day at a time."
+    }
 }
 
 struct HomeView: View {

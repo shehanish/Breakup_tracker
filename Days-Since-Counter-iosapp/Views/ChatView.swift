@@ -14,10 +14,13 @@ struct ChatMessage: Identifiable {
 }
 
 struct ChatView: View {
+    let aiService: any AIInsightService
+    
     @State private var messages: [ChatMessage] = [
         ChatMessage(text: "I'm here to listen. What's on your mind?", isUser: false)
     ]
     @State private var inputText: String = ""
+    @State private var isThinking: Bool = false
 
     var body: some View {
         ZStack {
@@ -61,6 +64,31 @@ struct ChatView: View {
                     }
                 }
                 
+                if isThinking {
+                    HStack {
+                        Image("bubu")
+                            .resizable()
+                            .scaledToFit()
+                            .scaleEffect(1.4) 
+                            .frame(width: 30, height: 30)
+                            .background(Color.white.opacity(0.8))
+                            .clipShape(Circle())
+                            .padding(.bottom, 4)
+                        
+                        Text("typing...")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 8)
+                            .background(Color.white.opacity(0.85))
+                            .clipShape(RoundedRectangle(cornerRadius: 15))
+                        
+                        Spacer()
+                    }
+                    .padding(.horizontal)
+                    .padding(.bottom, 5)
+                }
+                
                 // Input Area
                 HStack(alignment: .bottom, spacing: 10) {
                     TextField("Type how you feel...", text: $inputText, axis: .vertical)
@@ -96,10 +124,23 @@ struct ChatView: View {
         // Add user message
         messages.append(ChatMessage(text: text, isUser: true))
         inputText = ""
+        isThinking = true
         
-        // Simulate AI thinking and replying for now
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-            messages.append(ChatMessage(text: "Thanks for sharing. Take things one day at a time. I'm here. (AI Integration coming soon)", isUser: false))
+        let conversation = messages.map { (isUser: $0.isUser, text: $0.text) }
+        
+        Task {
+            do {
+                let response = try await aiService.generateChatResponse(conversation: conversation)
+                await MainActor.run {
+                    messages.append(ChatMessage(text: response, isUser: false))
+                    isThinking = false
+                }
+            } catch {
+                await MainActor.run {
+                    messages.append(ChatMessage(text: "Something went wrong. Please try again.", isUser: false))
+                    isThinking = false
+                }
+            }
         }
     }
 }
@@ -160,5 +201,10 @@ struct RoundedCorner: Shape {
 }
 
 #Preview {
-    ChatView()
+    // Basic preview stub
+    struct PreviewService: AIInsightService {
+        func generateMoodInsight(from input: MoodInsightInput) async throws -> String { "Stub" }
+        func generateChatResponse(conversation: [(isUser: Bool, text: String)]) async throws -> String { "Stub reply" }
+    }
+    return ChatView(aiService: PreviewService())
 }

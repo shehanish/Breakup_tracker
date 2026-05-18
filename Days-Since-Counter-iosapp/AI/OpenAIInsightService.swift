@@ -109,6 +109,53 @@ struct OpenAIInsightService: AIInsightService {
         return text?.isEmpty == false ? text! : "No insight returned."
     }
 
+    func generateChatResponse(conversation: [(isUser: Bool, text: String)]) async throws -> String {
+        let url = URL(string: "https://api.openai.com/v1/chat/completions")!
+
+        let systemPrompt = """
+        You are a compassionate breakup recovery and healing AI assistant.
+        Your ultimate goal is to help the user heal, maintain boundaries, and move on from their breakup in a conversational format.
+        RULES:
+        1. If the user mentions wanting to contact their ex, checking their socials, or missing them, gently validate how hard it is but STRICTLY encourage them to maintain "no contact" for their own peace.
+        2. NEVER suggest reaching out to the ex, reconciling, or doing anything impulsive/unnecessary. 
+        3. Shift their focus back onto self-love, self-care, and moving forward.
+        4. Keep your response conversational, warm, and highly supportive. Be a good listener.
+        5. CRITICAL: Keep responses extremely brief and text-message length. 2-3 short sentences max.
+        """
+
+        var apiMessages: [ChatCompletionsRequest.Message] = [
+            .init(role: "system", content: systemPrompt)
+        ]
+
+        for msg in conversation {
+            apiMessages.append(.init(role: msg.isUser ? "user" : "assistant", content: msg.text))
+        }
+
+        let body = ChatCompletionsRequest(
+            model: model,
+            messages: apiMessages,
+            temperature: 0.7
+        )
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONEncoder().encode(body)
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let http = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
+        guard (200...299).contains(http.statusCode) else {
+            let bodyText = String(data: data, encoding: .utf8) ?? "<no response body>"
+            throw NSError(domain: "OpenAIInsightService", code: http.statusCode, userInfo: [NSLocalizedDescriptionKey: bodyText])
+        }
+
+        let decoded = try JSONDecoder().decode(ChatCompletionsResponse.self, from: data)
+        let text = decoded.choices.first?.message.content.trimmingCharacters(in: .whitespacesAndNewlines)
+        return text?.isEmpty == false ? text! : "I'm here for you."
+    }
+
     // MARK: - Helpers
 
     private func iso8601(_ date: Date) -> String {
