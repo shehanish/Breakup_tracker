@@ -84,29 +84,21 @@ struct HomeView: View {
 
                     // AI bubble (always visible if you set default text)
                     if let insight = vm.todayInsightText, !insight.isEmpty {
-                        VStack(spacing: 16) {
+                        VStack(spacing: 4) {
                             AIInsightBubbleView(text: insight, avatarSystemImage: "person.crop.circle.fill")
                             
                             Button(action: {
-                                // Redirection to Chat Tab
                                 selectedTab = 1
                             }) {
-                                HStack {
-                                    Image(systemName: "bubble.left.and.bubble.right.fill")
-                                    Text("I'm here to listen, let's chat")
-                                        .fontWeight(.semibold)
+                                HStack(spacing: 4) {
+                                    Text("Talk to me about it")
+                                    Image(systemName: "chevron.right")
                                 }
-                                .padding(.horizontal, 22)
-                                .padding(.vertical, 14)
-                                .background(Color.white.opacity(0.8))
-                                .foregroundStyle(Color.brandPrimary)
-                                .clipShape(Capsule())
-                                .overlay(
-                                    Capsule()
-                                        .stroke(Color.brandPrimary.opacity(0.3), lineWidth: 1)
-                                )
-                                .shadow(color: .black.opacity(0.04), radius: 6, x: 0, y: 3)
+                                .font(.caption)
+                                .foregroundStyle(Color.brandPrimary.opacity(0.7))
                             }
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+                            .padding(.trailing, 36)
                         }
                     }
 
