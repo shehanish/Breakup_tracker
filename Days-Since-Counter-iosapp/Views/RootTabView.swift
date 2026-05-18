@@ -15,49 +15,52 @@ struct RootTabView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var selectedTab: Int = 0
 
+    // Keep VMs in State so they are only created once and don't leak memory on re-renders
+    @State private var homeVM: HomeViewModel?
+    @State private var chatVM: ChatViewModel?
+
     private let userID = "local-debug-user"
 
     var body: some View {
-        let moodRepo = SwiftDataMoodRepository(context: modelContext)
+        ZStack {
+            if let homeVM = homeVM, let chatVM = chatVM {
+                TabView(selection: $selectedTab) {
+                    HomeView(vm: homeVM, selectedTab: $selectedTab)
+                        .tabItem { Label("Today", systemImage: "calendar") }
+                        .tag(0)
 
-        // Real service using your OpenAI API key from Secrets.xcconfig
+                    ChatView(vm: chatVM)
+                        .tabItem { Label("Chat", systemImage: "bubble.left.and.bubble.right") }
+                        .tag(1)
+
+                    CounterView()
+                        .tabItem { Label("No Contact", systemImage: "clock") }
+                        .tag(2)
+                }
+                .tint(Color.brandPrimary)
+            } else {
+                ProgressView() // Show loading until VMs initialize
+            }
+        }
+        .onAppear {
+            setupViewModels()
+        }
+    }
+    
+    private func setupViewModels() {
+        // Only initialize once to prevent memory leaks
+        guard homeVM == nil else { return }
+        
+        let moodRepo = SwiftDataMoodRepository(context: modelContext)
         let aiService: any AIInsightService = OpenAIInsightService(apiKey: AppConfig.apiKey)
 
-        let homeVM = HomeViewModel(
+        homeVM = HomeViewModel(
             moodRepo: moodRepo,
             aiService: aiService,
             userID: userID
         )
-
-        let reportVM = ReportViewModel(
-            moodRepo: moodRepo,
-            userID: userID
-        )
         
-        let chatVM = ChatViewModel(aiService: aiService)
-
-        ZStack {
-            
-            TabView(selection: $selectedTab) {
-                HomeView(vm: homeVM, selectedTab: $selectedTab)
-                    .tabItem { Label("Today", systemImage: "calendar") }
-                    .tag(0)
-
-                ChatView(vm: chatVM)
-                    .tabItem { Label("Chat", systemImage: "bubble.left.and.bubble.right") }
-                    .tag(1)
-
-                CounterView()
-                    .tabItem { Label("No Contact", systemImage: "clock") }
-                    .tag(2)
-            }
-            .tint(Color.brandPrimary)
-            
-
-            // If you later want to show the report overlay:
-            // ReportView(vm: reportVM)
-            //     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-        }
+        chatVM = ChatViewModel(aiService: aiService)
     }
 }
 
