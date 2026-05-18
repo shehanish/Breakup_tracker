@@ -16,33 +16,41 @@ extension Color {
 }
 
 extension Color {
-    static let lavender = Color(red: 189/255, green: 166/255, blue: 206/255)
+    // MARK: - Base Palette (From Image)
+    static let midnight   = Color(red: 11/255, green: 25/255, blue: 87/255)     // #0b1957
+    static let sapphire   = Color(red: 66/255, green: 107/255, blue: 194/255)   // #426bc2
+    static let petal      = Color(red: 232/255, green: 217/255, blue: 237/255)  // #e8d9ed
+    static let lace       = Color(red: 247/255, green: 244/255, blue: 237/255)  // #f7f4ed
+    static let lavender   = Color(red: 210/255, green: 179/255, blue: 219/255)  // #d2b3db
+    static let bridalBlue = Color(red: 233/255, green: 243/255, blue: 255/255)  // #e9f3ff
     
     // MARK: - Brand Colors
-    // A calm, deep slate in light mode / soft, airy ice-blue in dark mode
+    // Midnight in light mode / Bridal Blue in dark mode for crisp contrast
     static let brandPrimary = Color(
-        light: Color(red: 44/255, green: 62/255, blue: 80/255),    // Deep Calm Slate
-        dark: Color(red: 228/255, green: 233/255, blue: 242/255)   // Soft Ice Blue
+        light: midnight,
+        dark: bridalBlue
     )
     
-    // Automatically contrasts against brandPrimary
+    // Auto-contrasts against brandPrimary
     static let textOnPrimary = Color(
-        light: .white,
-        dark: Color(red: 13/255, green: 14/255, blue: 19/255)      // Deep Background Color
+        light: lace,
+        dark: midnight
     )
     
-    // MARK: - App Background Gradient (Calm Slate & Midnight Sky)
+    // MARK: - App Background Gradient
+    // Light Mode: Warming sunrise (Lace -> Bridal Blue -> Petal)
+    // Dark Mode: Deep dusk (Midnight -> Deeper Midnight -> Sapphire blend)
     static let bgTop = Color(
-        light: Color(red: 244/255, green: 246/255, blue: 249/255),
-        dark: Color(red: 31/255, green: 35/255, blue: 45/255)
+        light: lace,
+        dark: Color(red: 5/255, green: 13/255, blue: 45/255) // Even darker than midnight
     )
     static let bgMiddle = Color(
-        light: Color(red: 229/255, green: 233/255, blue: 240/255),
-        dark: Color(red: 22/255, green: 25/255, blue: 33/255)
+        light: bridalBlue,
+        dark: midnight
     )
     static let bgBottom = Color(
-        light: Color(red: 208/255, green: 217/255, blue: 228/255),
-        dark: Color(red: 13/255, green: 14/255, blue: 19/255)
+        light: petal,
+        dark: sapphire.opacity(0.3) // Soft fade into Sapphire
     )
     
     static let appBackgroundGradient = LinearGradient(
