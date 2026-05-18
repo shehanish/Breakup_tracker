@@ -33,6 +33,8 @@ struct RootTabView: View {
             moodRepo: moodRepo,
             userID: userID
         )
+        
+        let chatVM = ChatViewModel(aiService: aiService)
 
         ZStack {
             
@@ -41,7 +43,7 @@ struct RootTabView: View {
                     .tabItem { Label("Today", systemImage: "calendar") }
                     .tag(0)
 
-                ChatView(aiService: aiService)
+                ChatView(vm: chatVM)
                     .tabItem { Label("Chat", systemImage: "bubble.left.and.bubble.right") }
                     .tag(1)
 

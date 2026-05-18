@@ -7,20 +7,12 @@
 
 import SwiftUI
 
-struct ChatMessage: Identifiable {
-    let id = UUID()
-    let text: String
-    let isUser: Bool
-}
-
 struct ChatView: View {
-    let aiService: any AIInsightService
-    
-    @State private var messages: [ChatMessage] = [
-        ChatMessage(text: "I'm here to listen. What's on your mind?", isUser: false)
-    ]
-    @State private var inputText: String = ""
-    @State private var isThinking: Bool = false
+    @State private var vm: ChatViewModel
+
+    init(vm: ChatViewModel) {
+        _vm = State(initialValue: vm)
+    }
 
     var body: some View {
         ZStack {
@@ -46,7 +38,7 @@ struct ChatView: View {
                 ScrollView(.vertical, showsIndicators: false) {
                     ScrollViewReader { proxy in
                         VStack(spacing: 16) {
-                            ForEach(messages) { message in
+                            ForEach(vm.messages) { message in
                                 MessageBubble(message: message)
                                     .id(message.id)
                             }
@@ -54,8 +46,8 @@ struct ChatView: View {
                         .padding(.horizontal)
                         .padding(.top, 10)
                         // Auto-scroll to bottom when new messages arrive
-                        .onChange(of: messages.count) { _ in
-                            if let last = messages.last {
+                        .onChange(of: vm.messages.count) { _ in
+                            if let last = vm.messages.last {
                                 withAnimation {
                                     proxy.scrollTo(last.id, anchor: .bottom)
                                 }
@@ -64,7 +56,7 @@ struct ChatView: View {
                     }
                 }
                 
-                if isThinking {
+                if vm.isThinking {
                     HStack {
                         Image("bubu")
                             .resizable()
@@ -91,56 +83,31 @@ struct ChatView: View {
                 
                 // Input Area
                 HStack(alignment: .bottom, spacing: 10) {
-                    TextField("Type how you feel...", text: $inputText, axis: .vertical)
+                    TextField("Type how you feel...", text: $vm.inputText, axis: .vertical)
                         .padding(14)
                         .background(Color.white.opacity(0.85))
                         .clipShape(RoundedRectangle(cornerRadius: 20))
                         .lineLimit(1...5)
 
-                    Button(action: sendMessage) {
+                    Button(action: {
+                        Task { await vm.sendMessage() }
+                    }) {
                         Image(systemName: "arrow.up")
                             .font(.system(size: 18, weight: .bold))
                             .foregroundColor(.white)
                             .frame(width: 44, height: 44)
                             .background(
-                                inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                                vm.inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
                                 ? Color.brandPrimary.opacity(0.5)
                                 : Color.brandPrimary
                             )
                             .clipShape(Circle())
                     }
-                    .disabled(inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    .disabled(vm.inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
                 .padding()
             }
             .padding(.bottom, 60) // Add bottom padding to account for TabBar
-        }
-    }
-
-    private func sendMessage() {
-        let text = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !text.isEmpty else { return }
-
-        // Add user message
-        messages.append(ChatMessage(text: text, isUser: true))
-        inputText = ""
-        isThinking = true
-        
-        let conversation = messages.map { (isUser: $0.isUser, text: $0.text) }
-        
-        Task {
-            do {
-                let response = try await aiService.generateChatResponse(conversation: conversation)
-                await MainActor.run {
-                    messages.append(ChatMessage(text: response, isUser: false))
-                    isThinking = false
-                }
-            } catch {
-                await MainActor.run {
-                    messages.append(ChatMessage(text: "Something went wrong. Please try again.", isUser: false))
-                    isThinking = false
-                }
-            }
         }
     }
 }
@@ -206,5 +173,7 @@ struct RoundedCorner: Shape {
         func generateMoodInsight(from input: MoodInsightInput) async throws -> String { "Stub" }
         func generateChatResponse(conversation: [(isUser: Bool, text: String)]) async throws -> String { "Stub reply" }
     }
-    return ChatView(aiService: PreviewService())
+    
+    let vm = ChatViewModel(aiService: PreviewService())
+    return ChatView(vm: vm)
 }
