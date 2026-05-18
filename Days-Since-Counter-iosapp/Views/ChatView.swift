@@ -88,6 +88,7 @@ struct ChatView: View {
                         .background(Color.white.opacity(0.85))
                         .clipShape(RoundedRectangle(cornerRadius: 20))
                         .lineLimit(1...5)
+                        .autocorrectionDisabled()
 
                     Button(action: {
                         Task { await vm.sendMessage() }
