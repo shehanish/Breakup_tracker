@@ -67,9 +67,9 @@ struct HomeView: View {
                         Task { await vm.apply() }
                     }
                     .padding(.horizontal)
-                    
-                    //the ai Analays dialog box
-                   if vm.isGeneratingTodayInsight {
+
+                    // AI loading row
+                    if vm.isGeneratingTodayInsight {
                         HStack(spacing: 10) {
                             ProgressView()
                             Text("Thinking…")
@@ -80,10 +80,12 @@ struct HomeView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
 
-                    if let insight = vm.todayInsightText {
+                    // AI bubble (always visible if you set default text)
+                    if let insight = vm.todayInsightText, !insight.isEmpty {
                         AIInsightBubbleView(text: insight, avatarSystemImage: "person.crop.circle.fill")
                     }
-                     //Debug View - Remove it later!!!
+
+                    // Debug View - Remove it later!!!
                     if let dbg = vm.lastSavedDebugText {
                         Text(dbg)
                             .font(.footnote)
@@ -94,7 +96,7 @@ struct HomeView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 14))
                             .padding(.horizontal)
                     }
-                    
+
                     if let err = vm.lastError {
                         Text("Error: \(err)")
                             .font(.footnote)
@@ -102,7 +104,12 @@ struct HomeView: View {
                             .padding(.horizontal)
                     }
                 }
-                .padding(.bottom, 80) // space above the tab bar
+                .padding(.top, 8)
+                .padding(.bottom, 16) // small padding; real space comes from safeAreaInset below
+            }
+            // IMPORTANT: prevents scroll content being hidden under the Tab Bar
+            .safeAreaInset(edge: .bottom) {
+                Color.clear.frame(height: 110) // adjust 90–120 if needed
             }
         }
     }
@@ -123,3 +130,4 @@ struct HomeView: View {
 
     HomeView(vm: vm)
 }
+

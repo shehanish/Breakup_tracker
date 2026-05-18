@@ -12,4 +12,5 @@ struct MoodInsightInput: Encodable {
     let startDate: Date
     let endDate: Date
     let moodCounts: [String: Int]
+    let notes: [String]
 }

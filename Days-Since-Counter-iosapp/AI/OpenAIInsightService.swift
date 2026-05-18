@@ -50,22 +50,33 @@ struct OpenAIInsightService: AIInsightService {
 
         // Privacy-first: only aggregated counts and date range.
         let prompt = """
-        Write 1–3 short sentences about today's mood check-in based only on the mood counts provided.
-        Tone: supportive, neutral, non-judgmental.
+        Write 1–3 short sentences about today's check-in. The user logged the following moods and personal notes.
+        Please provide supportive and kind words acknowledging how they feel. 
+        Always include exactly one gentle, actionable suggestion they can do today based on their input.
         Do NOT diagnose, do NOT mention mental disorders, do NOT give medical instructions.
-        Include at most one gentle suggestion.
         End the message with: "(Not medical advice.)"
 
         Time range: \(iso8601(input.startDate)) to \(iso8601(input.endDate))
         Mood counts: \(input.moodCounts)
+        Personal notes: \(input.notes.joined(separator: "\\n"))
 
         If there is no data, encourage the user to log their mood.
+        """
+
+        let systemPrompt = """
+        You are a compassionate breakup recovery and healing AI assistant.
+        Your ultimate goal is to help the user heal, maintain boundaries, and move on from their breakup.
+        RULES:
+        1. If the user mentions wanting to contact their ex, checking their socials, or missing them, gently validate how hard it is but STRICTLY encourage them to maintain "no contact" for their own peace.
+        2. NEVER suggest reaching out to the ex, reconciling, or doing anything impulsive/unnecessary. 
+        3. Shift their focus back onto self-love, self-care, and moving forward.
+        4. Keep your responses brief, safe, warm, and highly supportive.
         """
 
         let body = ChatCompletionsRequest(
             model: model,
             messages: [
-                .init(role: "system", content: "You write safe, brief, supportive mood insights."),
+                .init(role: "system", content: systemPrompt),
                 .init(role: "user", content: prompt)
             ],
             temperature: 0.6

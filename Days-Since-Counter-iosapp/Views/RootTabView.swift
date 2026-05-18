@@ -5,6 +5,9 @@
 //  Created by Shehani Hansika on 07.05.26.
 //
 
+//  BottomNavBar.swift
+//  Days-Since-Counter-iosapp
+
 import SwiftUI
 import SwiftData
 
@@ -16,9 +19,8 @@ struct RootTabView: View {
     var body: some View {
         let moodRepo = SwiftDataMoodRepository(context: modelContext)
 
-        // Real service (reads key from environment / config if you have one).
-        // If you don't have a key yet, use the stub below.
-        let aiService: any AIInsightService = PreviewAIInsightService()
+        // Real service using your OpenAI API key from Secrets.xcconfig
+        let aiService: any AIInsightService = OpenAIInsightService(apiKey: AppConfig.apiKey)
 
         let homeVM = HomeViewModel(
             moodRepo: moodRepo,
@@ -32,6 +34,7 @@ struct RootTabView: View {
         )
 
         ZStack {
+            
             TabView {
                 HomeView(vm: homeVM)
                     .tabItem { Label("Today", systemImage: "calendar") }
@@ -43,6 +46,7 @@ struct RootTabView: View {
                     .tabItem { Label("No Contact", systemImage: "clock") }
             }
             .tint(Color.brandPrimary)
+            
 
             // If you later want to show the report overlay:
             // ReportView(vm: reportVM)

@@ -32,6 +32,11 @@ struct CounterView: View {
                 Text("You can do this!")
                     .font(.largeTitle)
                     .fontWeight(.bold)
+                
+                // Debug text so the user can verify the API key is injected!
+                Text("API Key Loaded: \(AppConfig.apiKey == "put-your-key-here" ? "Wait, it's the example key!" : "Yes, secret key is loaded!")")
+                    .font(.footnote)
+                    .foregroundColor(.gray)
 
                 VStack(spacing: 20) {
                     DatePicker("Start Date",
@@ -41,7 +46,7 @@ struct CounterView: View {
                     .padding()
                     .background(.ultraThinMaterial)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
-                    .frame(maxWidth: 380)
+                    .padding(.horizontal)
 
                     DropDownView(title: "I go for...",
                                  prompt: "1 Week",

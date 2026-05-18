@@ -67,7 +67,7 @@ final class HomeViewModel {
             // Debug verify saved
             if let latest = try await moodRepo.fetchLatestMoodEntry(userID: userID) {
                 let dbg = """
-                SAVED ✅
+                SAVED 
                 time: \(latest.timestamp)
                 moods: \(latest.moods)
                 notes: \(latest.notes ?? "nil")
@@ -110,14 +110,18 @@ final class HomeViewModel {
             )
 
             var counts: [String: Int] = [:]
+            var allNotes: [String] = []
             for entry in entries {
                 for mood in entry.moods {
                     counts[mood, default: 0] += 1
                 }
+                if let note = entry.notes, !note.isEmpty {
+                    allNotes.append(note)
+                }
             }
 
             // If no moods logged today, keep a general supportive message (no AI call)
-            guard !counts.isEmpty else {
+            guard !counts.isEmpty || !allNotes.isEmpty else {
                 todayInsightText = "If today feels heavy, try one gentle thing: water, a walk, or texting someone safe. (Not medical advice.)"
                 return
             }
@@ -125,7 +129,8 @@ final class HomeViewModel {
             let input = MoodInsightInput(
                 startDate: startOfToday,
                 endDate: now,
-                moodCounts: counts
+                moodCounts: counts,
+                notes: allNotes
             )
 
             todayInsightText = try await aiService.generateMoodInsight(from: input)

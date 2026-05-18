@@ -26,3 +26,5 @@ project.xcworkspace/
 
 # Custom Configs for this app
 Config/Secrets.xcconfig
+
+Days-Since-Counter-iosapp/Config/Secrets.xcconfig
