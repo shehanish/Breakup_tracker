@@ -50,7 +50,7 @@ struct OpenAIInsightService: AIInsightService {
 
         // Privacy-first: only aggregated counts and date range.
         let prompt = """
-        Write 1–3 short sentences about today's check-in. The user logged the following moods and personal notes.
+        Write MAXIMUM 3 very short, concise sentences about today's check-in. The user logged the following moods and personal notes.
         Please provide supportive and kind words acknowledging how they feel. 
         Always include exactly one gentle, actionable suggestion they can do today based on their input.
         Do NOT diagnose, do NOT mention mental disorders, do NOT give medical instructions.
@@ -70,7 +70,7 @@ struct OpenAIInsightService: AIInsightService {
         1. If the user mentions wanting to contact their ex, checking their socials, or missing them, gently validate how hard it is but STRICTLY encourage them to maintain "no contact" for their own peace.
         2. NEVER suggest reaching out to the ex, reconciling, or doing anything impulsive/unnecessary. 
         3. Shift their focus back onto self-love, self-care, and moving forward.
-        4. Keep your responses brief, safe, warm, and highly supportive.
+        4. CRITICAL: Keep your response EXTREMELY brief. MAXIMUM 2 short sentences total. No long paragraphs.
         """
 
         let body = ChatCompletionsRequest(
