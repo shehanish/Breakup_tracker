@@ -10,7 +10,7 @@ struct WelcomeView: View {
             VStack(spacing: 30) {
                 Spacer()
                 
-                Image("klito") // Placeholder for illustration
+                Image("bubu") // Placeholder for illustration
                     .resizable()
                     .scaledToFit()
                     .frame(width: 250)
@@ -47,7 +47,7 @@ struct WelcomeView: View {
         }
         .sheet(isPresented: $showAuthSheet) {
             AuthView()
-                .presentationDetents([.fraction(0.8), .large])
+                .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
         }
     }

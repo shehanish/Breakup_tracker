@@ -29,7 +29,7 @@ struct CounterView: View {
             } else {
                 // Initial State
                 VStack(spacing: 30) {
-                    Image("klito") // Placeholder for illustration if needed
+                    Image("bubu") // Placeholder for illustration if needed
                         .resizable()
                         .scaledToFit()
                         .frame(width: 200)
