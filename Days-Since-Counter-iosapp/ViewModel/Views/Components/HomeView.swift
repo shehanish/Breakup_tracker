@@ -19,6 +19,8 @@ private struct PreviewAIInsightService: AIInsightService {
 }
 
 struct HomeView: View {
+    @AppStorage("userName") private var userName = "Friend"
+
     private let moods = [
         "Calm", "Sad", "Angry", "Anxious",
         "Okay", "Hopeful", "Tired", "Lonely", "Empty"
@@ -30,6 +32,25 @@ struct HomeView: View {
     init(vm: HomeViewModel, selectedTab: Binding<Int>) {
         _vm = State(initialValue: vm)
         _selectedTab = selectedTab
+    }
+
+    @State private var timeBasedGreeting: String = "Good morning"
+    
+    private func updateGreeting() {
+        let hour = Calendar.current.component(.hour, from: Date())
+        switch hour {
+        case 5..<12:
+            timeBasedGreeting = "Good morning"
+        case 12..<17:
+            timeBasedGreeting = "Good afternoon"
+        default:
+            timeBasedGreeting = "Good evening"
+        }
+    }
+    
+    private var greetingText: String {
+        let nameToDisplay = userName.isEmpty ? "Friend" : userName
+        return "\(timeBasedGreeting), \(nameToDisplay)!"
     }
 
     var body: some View {
@@ -45,7 +66,7 @@ struct HomeView: View {
                         .frame(width: 250, height: 150)
                         .padding(.top, 2)
 
-                    Text("Good evening, Shehani!")
+                    Text(greetingText)
                         .font(.title)
                         .fontWeight(.bold)
                         .foregroundStyle(Color.brandPrimary)
@@ -123,6 +144,9 @@ struct HomeView: View {
             .safeAreaInset(edge: .bottom) {
                 Color.clear.frame(height: 110) // adjust 90–120 if needed
             }
+        }
+        .onAppear {
+            updateGreeting()
         }
     }
 }

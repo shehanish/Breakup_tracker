@@ -10,9 +10,15 @@ import SwiftData
 
 @main
 struct Days_Since_Counter_iosappApp: App {
+    @AppStorage("isLoggedIn") var isLoggedIn = false
+    
     var body: some Scene {
         WindowGroup {
-            RootTabView()
+            if isLoggedIn {
+                RootTabView()
+            } else {
+                WelcomeView()
+            }
         }
         .modelContainer(for:
             [MoodEntry.self]
