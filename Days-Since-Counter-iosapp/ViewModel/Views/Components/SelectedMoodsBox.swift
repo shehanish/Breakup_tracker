@@ -26,7 +26,7 @@ struct SelectedMoodsBox: View {
                             .font(.footnote)
                             .padding(.vertical, 6)
                             .padding(.horizontal, 10)
-                            .background(Color.lavender.opacity(1.0))
+                            .background(Color.sageGreen.opacity(1.0))
                             .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                             
                     }

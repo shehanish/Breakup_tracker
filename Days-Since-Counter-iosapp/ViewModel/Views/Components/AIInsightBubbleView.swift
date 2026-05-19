@@ -25,12 +25,12 @@ struct AIInsightBubbleView: View {
 
             Text(text)
                 .font(.subheadline)
-                .foregroundStyle(Color.petal)
+                .foregroundStyle(Color.textOnPrimary)
                 .padding(12)
-                .background(Color.sapphire.opacity(0.3))
+                .background(Color.white.opacity(0.9))
                 .overlay(
                     RoundedRectangle(cornerRadius: 16)
-                        .stroke(Color.brandPrimary.opacity(0.25), lineWidth: 1)
+                        .stroke(Color.brandPrimary.opacity(0.35), lineWidth: 1)
                        
                 )
                 .clipShape(RoundedRectangle(cornerRadius: 16))

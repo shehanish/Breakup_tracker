@@ -64,11 +64,11 @@ private struct MoodChip: View {
             .foregroundStyle(Color.brandPrimary)
             .background(
                 RoundedRectangle(cornerRadius: 14)
-                    .fill(isSelected ? Color.lavender.opacity(0.5) : Color.white.opacity(0.6))
+                    .fill(isSelected ? Color.sageGreen.opacity(0.3) : Color.white.opacity(0.9))
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 14)
-                    .strokeBorder(Color.lavender.opacity(0.08), lineWidth: 1)
+                    .strokeBorder(isSelected ? Color.sageGreen.opacity(0.5) : Color.sageGreen.opacity(0.15), lineWidth: 1)
             )
         }
         .buttonStyle(.plain)

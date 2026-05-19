@@ -69,7 +69,7 @@ struct OpenAIInsightService: AIInsightService {
         1. If the user mentions wanting to contact their ex, checking their socials, or missing them, gently validate how hard it is but STRICTLY encourage them to maintain "no contact" for their own peace.
         2. NEVER suggest reaching out to the ex, reconciling, or doing anything impulsive/unnecessary. 
         3. Shift their focus back onto self-love, self-care, and moving forward.
-        4. CRITICAL: Keep your response EXTREMELY brief. MAXIMUM 2 short sentences total. No long paragraphs.
+        4. CRITICAL: Keep your response EXTREMELY brief. MAXIMUM 3 short sentences total. No long paragraphs.
         """
 
         let body = ChatCompletionsRequest(

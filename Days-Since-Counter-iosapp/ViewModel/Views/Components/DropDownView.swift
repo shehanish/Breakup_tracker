@@ -31,7 +31,7 @@ struct DropDownView: View {
                     
                     Image(systemName: "chevron.down")
                         .font(.subheadline)
-                        .foregroundStyle(Color.lavender)
+                        .foregroundStyle(Color.sageGreen)
                         .rotationEffect(.degrees(isExpanded ? -180 : 0))
                 }
                 .frame(height: 40)

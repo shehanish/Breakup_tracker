@@ -41,11 +41,11 @@ struct MoodsSectionView: View {
                     TextField("Type how you feel in words…", text: $notesText, axis: .vertical)
                         .lineLimit(3...6)
                         .padding(12)
-                        .background(.white.opacity(0.55))
+                        .background(.white.opacity(0.85))
                         .clipShape(RoundedRectangle(cornerRadius: 14))
                         .overlay(
                             RoundedRectangle(cornerRadius: 14)
-                                .stroke(Color.brandPrimary.opacity(0.20), lineWidth: 1)
+                                .stroke(Color.brandPrimary.opacity(0.35), lineWidth: 1)
                         )
                 }
 
@@ -54,13 +54,14 @@ struct MoodsSectionView: View {
                     print("APPLY tapped. selectedMoods =", Array(selectedMoods).sorted())
                 } label: {
                     Text("Apply")
-                        .fontWeight(.semibold)
+                        .fontWeight(.bold)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
-                        .foregroundStyle(Color.brandPrimary)
+                        .foregroundStyle(.white)
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(Color.lavender.opacity(0.8))
+                
+                .tint(Color.sageGreen)
                 
             }
             .padding(.horizontal)

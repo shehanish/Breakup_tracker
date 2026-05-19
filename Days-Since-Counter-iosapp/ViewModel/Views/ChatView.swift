@@ -87,7 +87,7 @@ struct ChatView: View {
                     }) {
                         Image(systemName: "arrow.up")
                             .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(Color.textOnPrimary)
+                            .foregroundColor(.white)
                             .frame(width: 44, height: 44)
                             .background(
                                 vm.inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -98,9 +98,10 @@ struct ChatView: View {
                     }
                     .disabled(vm.inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
-                .padding()
+                .padding(.horizontal)
+                .padding(.top, 8)
+                .padding(.bottom, 4)
             }
-            .padding(.bottom, 60) // Add bottom padding to account for TabBar
         }
     }
 }
@@ -116,7 +117,7 @@ struct MessageBubble: View {
                 Text(message.text)
                     .padding(14)
                     .background(Color.brandPrimary)
-                    .foregroundColor(Color.textOnPrimary)
+                    .foregroundColor(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                     // Nice tailored corners for user message
                     .cornerRadius(4, corners: [.bottomRight])
@@ -132,8 +133,8 @@ struct MessageBubble: View {
 
                 Text(message.text)
                     .padding(14)
-                    .background(Color.sapphire.opacity(0.2))
-                    .foregroundColor(Color.petal)
+                    .background(Color.sageGreen.opacity(0.15))
+                    .foregroundColor(Color.textOnPrimary)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                     // Nice tailored corners for AI message
                     .cornerRadius(4, corners: [.bottomLeft])

@@ -13,8 +13,6 @@ struct Days_Since_Counter_iosappApp: App {
     var body: some Scene {
         WindowGroup {
             RootTabView()
-                .preferredColorScheme(.dark)
-                .foregroundStyle(Color.petal)
         }
         .modelContainer(for:
             [MoodEntry.self]
