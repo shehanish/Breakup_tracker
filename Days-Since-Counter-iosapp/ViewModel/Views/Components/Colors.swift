@@ -16,12 +16,12 @@ extension Color {
 }
 
 extension Color {
-    // MARK: - Calm & Grounding Palette (Sage & Sand)
-    static let darkCharcoal = Color(red: 44/255, green: 56/255, blue: 50/255)
-    static let mutedForest  = Color(red: 28/255, green: 35/255, blue: 31/255)
-    static let sageGreen    = Color(red: 141/255, green: 163/255, blue: 153/255)
-    static let softSand     = Color(red: 249/255, green: 249/255, blue: 245/255)
-    static let warmGray     = Color(red: 235/255, green: 236/255, blue: 232/255)
+    // MARK: - Calm & Grounding Palette (Purple & Sand)
+    static let darkCharcoal = Color(red: 48/255, green: 40/255, blue: 56/255) // Deep Plum
+    static let mutedForest  = Color(red: 30/255, green: 24/255, blue: 38/255) // Near Black Purple
+    static let sageGreen    = Color(red: 163/255, green: 145/255, blue: 178/255) // Lavender/Mauve
+    static let softSand     = Color(red: 248/255, green: 246/255, blue: 250/255) // Light Purple-tinted Off-White
+    static let warmGray     = Color(red: 236/255, green: 232/255, blue: 240/255) // Pale Lilac Gray
     
     // MARK: - Brand Colors
     // A soothing sage green fits the "healing/calm" theme perfectly

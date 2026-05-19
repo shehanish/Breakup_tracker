@@ -129,7 +129,7 @@ struct MessageBubble: View {
                     .frame(width: 30, height: 30)
                     .background(Color.white.opacity(0.8))
                     .clipShape(Circle())
-                    .padding(.bottom, 4)
+                    .padding(.bottom, 6)
 
                 Text(message.text)
                     .padding(14)

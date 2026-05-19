@@ -1,67 +1,305 @@
 //
-//  SettingsView.swift
+//  CounterView.swift
 //  Days-Since-Counter-iosapp
 //
 //  Created by Shehani Hansika on 07.05.26.
 //
 
-
 import SwiftUI
+import Combine
 
 struct CounterView: View {
-    private let period = ["30 Days", "60 Days", "90 Days", "Custom"]
-
-    @State private var selectedPeriod: String?
+    @State private var isTrackerActive = false
+    @State private var showSetupSheet = false
+    
+    // Details for tracker
     @State private var selectedDate: Date = .now
+    @State private var selectedPeriod: String?
 
     var body: some View {
         ZStack {
-            LinearGradient(
-                colors: [
-                    Color(red: 0.98, green: 0.88, blue: 0.94),
-                    Color(red: 0.92, green: 0.85, blue: 0.97),
-                    Color(red: 0.88, green: 0.82, blue: 0.96)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
+            Color.appBackgroundGradient
+                .ignoresSafeArea()
 
-            VStack(spacing: 30) {
-               
-                Text("You can do this!")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                
-                // Debug text so the user can verify the API key is injected!
-                Text("API Key Loaded: \(AppConfig.apiKey == "put-your-key-here" ? "Wait, it's the example key!" : "Yes, secret key is loaded!")")
-                    .font(.footnote)
-                    .foregroundColor(.gray)
+            if isTrackerActive {
+                ActiveTrackerView(startDate: selectedDate, goal: selectedPeriod) {
+                    isTrackerActive = false
+                    selectedPeriod = nil
+                }
+            } else {
+                // Initial State
+                VStack(spacing: 30) {
+                    Image("klito") // Placeholder for illustration if needed
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 200)
+                    
+                    Text("Ready to take a step back?")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundStyle(Color.textOnPrimary)
+                    
+                    Text("Starting no contact gives you space to heal and refocus on yourself.")
+                        .font(.body)
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(Color.textOnPrimary.opacity(0.8))
+                        .padding(.horizontal, 30)
 
-                VStack(spacing: 20) {
-                    DatePicker("Start Date",
-                               selection: $selectedDate,
-                               displayedComponents: [.date, .hourAndMinute])
-                    .datePickerStyle(.compact)
-                    .padding()
-                    .background(.ultraThinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                    .padding(.horizontal)
-
-                    DropDownView(title: "I go for...",
-                                 prompt: "1 Week",
-                                 options: period,
-                                 selection: $selectedPeriod)
-            
+                    Button(action: {
+                        showSetupSheet = true
+                    }) {
+                        Text("Start Go For No Contact")
+                            .font(.headline)
+                            .fontWeight(.bold)
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.brandPrimary)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                    }
+                    .padding(.horizontal, 40)
+                    .padding(.top, 20)
                 }
             }
-            .padding(.horizontal)
-            .padding(.bottom, 30)
-           // slight breathing room above tab bar
+        }
+        .sheet(isPresented: $showSetupSheet) {
+            NoContactSetupSheet(
+                selectedDate: $selectedDate,
+                selectedPeriod: $selectedPeriod,
+                onSave: {
+                    isTrackerActive = true
+                    showSetupSheet = false
+                }
+            )
+            .presentationDetents([.fraction(0.6), .large])
+            .presentationDragIndicator(.visible)
+        }
+    }
+}
+
+// MARK: - Setup Sheet
+struct NoContactSetupSheet: View {
+    @Binding var selectedDate: Date
+    @Binding var selectedPeriod: String?
+    var onSave: () -> Void
+    
+    @State private var customDays: String = ""
+    
+    private let periodOptions = [
+        "30 Days",
+        "60 Days",
+        "90 Days",
+        "Unlimited / Not Decided",
+        "Custom"
+    ]
+    
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                Color.appBackgroundGradient.ignoresSafeArea()
+                
+                ScrollView {
+                    VStack(spacing: 25) {
+                        
+                        Text("Set Up No Contact")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .foregroundStyle(Color.textOnPrimary)
+                            .padding(.top, 20)
+                        
+                        // Date & Time Picker
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("When did you start?")
+                                .font(.subheadline)
+                                .foregroundStyle(Color.textOnPrimary.opacity(0.8))
+                                .padding(.horizontal, 20)
+                            
+                            DatePicker("Start Date & Time",
+                                       selection: $selectedDate,
+                                       displayedComponents: [.date, .hourAndMinute])
+                            .datePickerStyle(.compact)
+                            .padding()
+                            .background(.white.opacity(0.8))
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                            .padding(.horizontal)
+                        }
+                        
+                        // Duration Dropdown
+                        DropDownView(
+                            title: "How long is your goal?",
+                            prompt: "Select duration",
+                            options: periodOptions,
+                            selection: $selectedPeriod
+                        )
+                        .padding(.top, 10)
+                        
+                        if selectedPeriod == "Custom" {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("Enter number of days")
+                                    .font(.subheadline)
+                                    .foregroundStyle(Color.textOnPrimary.opacity(0.8))
+                                    .padding(.horizontal, 20)
+                                
+                                TextField("e.g. 14", text: $customDays)
+                                    .keyboardType(.numberPad)
+                                    .padding()
+                                    .background(.white.opacity(0.8))
+                                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                                    .padding(.horizontal)
+                            }
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                        }
+                        
+                        Spacer(minLength: 30)
+                        
+                        // Save Button
+                        Button(action: {
+                            if selectedPeriod == "Custom" && !customDays.isEmpty {
+                                selectedPeriod = "\(customDays) Days"
+                            }
+                            onSave()
+                        }) {
+                            Text("Save and Start")
+                                .font(.headline)
+                                .fontWeight(.bold)
+                                .foregroundStyle(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background((selectedPeriod != nil && (selectedPeriod != "Custom" || !customDays.isEmpty)) ? Color.brandPrimary : Color.brandPrimary.opacity(0.5))
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                        }
+                        .disabled(selectedPeriod == nil || (selectedPeriod == "Custom" && customDays.isEmpty)) // Require them to pick a duration or type custom days
+                        .padding(.horizontal, 40)
+                        .padding(.bottom, 30)
+                    }
+                    .animation(.snappy, value: selectedPeriod)
+                }
+            }
         }
     }
 }
 
 #Preview {
     CounterView()
+}
+
+// MARK: - Active Tracker View
+struct ActiveTrackerView: View {
+    let startDate: Date
+    let goal: String?
+    let onReset: () -> Void
+    
+    @State private var now = Date()
+    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    
+    // Parse goal to days
+    private var goalDays: Double? {
+        guard let goal = goal else { return nil }
+        if goal.contains("Unlimited") || goal.contains("Not Decided") {
+            return nil
+        }
+        let daysString = goal.replacingOccurrences(of: " Days", with: "").trimmingCharacters(in: .whitespaces)
+        return Double(daysString)
+    }
+    
+    private var progress: Double {
+        guard let goalDays = goalDays, goalDays > 0 else { return 1.0 } // Full circle if unlimited
+        let totalSeconds = goalDays * 24 * 60 * 60
+        let elapsedSeconds = now.timeIntervalSince(startDate)
+        
+        let calculatedProgress = elapsedSeconds / totalSeconds
+        return min(max(calculatedProgress, 0.0), 1.0)
+    }
+    
+    private var daysElapsed: Int {
+        let components = Calendar.current.dateComponents([.day], from: startDate, to: now)
+        return max(0, components.day ?? 0)
+    }
+    
+    var body: some View {
+        VStack(spacing: 40) {
+            Text("No Contact Journey")
+                .font(.title2)
+                .fontWeight(.bold)
+                .foregroundColor(Color.textOnPrimary)
+            
+            ZStack {
+                // Background Track
+                Circle()
+                    .stroke(Color.sageGreen.opacity(0.4), lineWidth: 20)
+                
+                // Progress
+                Circle()
+                    .trim(from: 0, to: CGFloat(progress))
+                    .stroke(
+                        Color.sageGreen,
+                        style: StrokeStyle(lineWidth: 20, lineCap: .round)
+                    )
+                    .rotationEffect(.degrees(-90))
+                    .animation(.linear(duration: 1.0), value: progress)
+                
+                // Content inside circle
+                VStack(spacing: 8) {
+                    Text("\(daysElapsed)")
+                        .font(.system(size: 60, weight: .bold, design: .rounded))
+                        .foregroundColor(Color.darkCharcoal)
+                    
+                    Text("Days since no contact")
+                        .font(.headline)
+                        .foregroundColor(Color.darkCharcoal.opacity(0.8))
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                    
+                    if let goalDays = goalDays {
+                        Text("Goal: \(Int(goalDays)) Days")
+                            .font(.caption)
+                            .padding(.top, 4)
+                            .foregroundColor(Color.darkCharcoal.opacity(0.7))
+                    } else {
+                        Text("Goal: Unlimited")
+                            .font(.caption)
+                            .padding(.top, 4)
+                            .foregroundColor(Color.darkCharcoal.opacity(0.7))
+                    }
+                }
+            }
+            .frame(width: 280, height: 280)
+            
+            // Detailed time
+            HStack(spacing: 20) {
+                timeComponentView(title: "Hours", value: Calendar.current.dateComponents([.hour], from: startDate, to: now).hour.map { $0 % 24 } ?? 0)
+                timeComponentView(title: "Mins", value: Calendar.current.dateComponents([.minute], from: startDate, to: now).minute.map { $0 % 60 } ?? 0)
+                timeComponentView(title: "Secs", value: Calendar.current.dateComponents([.second], from: startDate, to: now).second.map { $0 % 60 } ?? 0)
+            }
+            .padding()
+            .background(Color.sageGreen.opacity(0.2))
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+            
+            Button("Reset Tracker") {
+                onReset()
+            }
+            .font(.headline)
+            .padding()
+            .background(Color.warmGray)
+            .foregroundStyle(.red)
+            .clipShape(Capsule())
+            .padding(.top, 20)
+        }
+        .onReceive(timer) { _ in
+            now = Date()
+        }
+    }
+    
+    private func timeComponentView(title: String, value: Int) -> some View {
+        VStack {
+            Text(String(format: "%02d", max(0, value)))
+                .font(.title2)
+                .fontWeight(.bold)
+                .foregroundColor(Color.darkCharcoal)
+            Text(title)
+                .font(.caption)
+                .foregroundColor(Color.darkCharcoal.opacity(0.8))
+        }
+        .frame(width: 60)
+    }
 }
