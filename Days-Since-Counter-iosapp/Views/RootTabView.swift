@@ -22,6 +22,7 @@ struct RootTabView: View {
     private let userID = "local-debug-user"
 
     var body: some View {
+        
         ZStack {
             if let homeVM = homeVM, let chatVM = chatVM {
                 TabView(selection: $selectedTab) {
@@ -36,6 +37,10 @@ struct RootTabView: View {
                     CounterView()
                         .tabItem { Label("No Contact", systemImage: "clock") }
                         .tag(2)
+                        
+                    PanicRoomView()
+                        .tabItem { Label("Panic Room", systemImage: "heart.fill") }
+                        .tag(3)
                 }
                 .tint(Color.brandPrimary)
             } else {

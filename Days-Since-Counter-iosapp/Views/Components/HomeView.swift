@@ -20,6 +20,7 @@ private struct PreviewAIInsightService: AIInsightService {
 
 struct HomeView: View {
     @AppStorage("userName") private var userName = "Friend"
+    @AppStorage("profileImageData") private var profileImageData: Data = Data()
     @State private var showProfileSheet = false
     
     private let moods = [
@@ -151,9 +152,18 @@ struct HomeView: View {
                         Button(action: {
                             showProfileSheet = true
                         }) {
-                            Image(systemName: "person.crop.circle")
-                                .font(.title2)
-                                .foregroundStyle(Color.brandPrimary)
+                            if !profileImageData.isEmpty, let uiImage = UIImage(data: profileImageData) {
+                                Image(uiImage: uiImage)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 30, height: 30)
+                                    .clipShape(Circle())
+                                    .overlay(Circle().stroke(Color.brandPrimary, lineWidth: 1))
+                            } else {
+                                Image(systemName: "person.crop.circle")
+                                    .font(.title2)
+                                    .foregroundStyle(Color.brandPrimary)
+                            }
                         }
                     }
                 }

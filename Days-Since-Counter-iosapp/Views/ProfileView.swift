@@ -7,13 +7,18 @@
 
 
 import SwiftUI
+import PhotosUI
 
 struct ProfileView: View {
     @AppStorage("isLoggedIn") var isLoggedIn = false
     @AppStorage("userName") var userName = ""
+    @AppStorage("profileImageData") var profileImageData: Data = Data()
+    
     @Environment(\.dismiss) var dismiss
     
     @State private var editName: String = ""
+    @State private var selectedItem: PhotosPickerItem? = nil
+    @State private var profileImage: Image? = nil
     
     var body: some View {
         NavigationStack {
@@ -23,12 +28,34 @@ struct ProfileView: View {
                 ScrollView {
                     VStack(spacing: 30) {
                         // Avatar
-                        Image(systemName: "person.crop.circle.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 100, height: 100)
-                            .foregroundStyle(Color.brandPrimary)
-                            .padding(.top, 40)
+                        PhotosPicker(selection: $selectedItem, matching: .images, photoLibrary: .shared()) {
+                            if let profileImage = profileImage {
+                                profileImage
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 120, height: 120)
+                                    .clipShape(Circle())
+                                    .overlay(Circle().stroke(Color.brandPrimary, lineWidth: 2))
+                                    .padding(.top, 40)
+                            } else {
+                                Image(systemName: "person.crop.circle.fill")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 120, height: 120)
+                                    .foregroundStyle(Color.brandPrimary)
+                                    .padding(.top, 40)
+                            }
+                        }
+                        .onChange(of: selectedItem) { newItem in
+                            Task {
+                                if let data = try? await newItem?.loadTransferable(type: Data.self) {
+                                    profileImageData = data
+                                    if let uiImage = UIImage(data: data) {
+                                        profileImage = Image(uiImage: uiImage)
+                                    }
+                                }
+                            }
+                        }
                         
                         VStack(alignment: .leading, spacing: 10) {
                             Text("Name")
@@ -91,6 +118,9 @@ struct ProfileView: View {
             }
             .onAppear {
                 editName = userName
+                if !profileImageData.isEmpty, let uiImage = UIImage(data: profileImageData) {
+                    profileImage = Image(uiImage: uiImage)
+                }
             }
         }
     }

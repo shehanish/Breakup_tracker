@@ -12,6 +12,8 @@
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>MYAPI_KEY</key>
 	<string>$(MYAPI_KEY)</string>
+	<key>NSContactsUsageDescription</key>
+	<string>We access your contacts so you can call a friend when you need support.</string>
 	<key>UILaunchScreen</key>
 	<dict/>
 </dict>
