@@ -10,18 +10,11 @@ import SwiftUI
 
 struct AIInsightBubbleView: View {
     let text: String
-    var avatarSystemImage: String = "bubu"
+    var avatarSystemImage: String = "IMG_3016"
 
     var body: some View {
         HStack(alignment: .top, spacing: 5) {
-            Image("bubu" )
-                .resizable()
-                .scaledToFit()
-                .scaleEffect(1.6) 
-                .foregroundStyle(Color.brandPrimary)
-                .frame(width: 34, height: 34)
-                .background(Color.white.opacity(0.8))
-                .clipShape(Circle())
+            BlobAvatarView(width: 36, height: 30, showShadow: false)
 
             Text(text)
                 .font(.subheadline)

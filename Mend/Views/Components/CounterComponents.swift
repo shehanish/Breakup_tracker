@@ -98,6 +98,15 @@ struct NoContactSetupSheet: View {
                     }
                     .animation(.snappy, value: selectedPeriod)
                 }
+                .scrollDismissesKeyboard(.interactively)
+            }
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") {
+                        dismissKeyboard()
+                    }
+                }
             }
         }
     }

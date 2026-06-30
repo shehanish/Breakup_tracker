@@ -15,13 +15,7 @@ struct MessageBubble: View {
                     // Nice tailored corners for user message
                     .cornerRadius(4, corners: [.bottomRight])
             } else {
-                Image("bubu") // Using the same avatar icon
-                    .resizable()
-                    .scaledToFit()
-                    .scaleEffect(1.4) 
-                    .frame(width: 30, height: 30)
-                    .background(Color.white.opacity(0.8))
-                    .clipShape(Circle())
+                BlobAvatarView(width: 34, height: 28, showShadow: false)
                     .padding(.bottom, 6)
 
                 Text(message.text)

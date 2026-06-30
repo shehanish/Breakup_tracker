@@ -13,6 +13,7 @@ private struct PreviewAIInsightService: AIInsightService {
     func generateMoodInsight(from input: MoodInsightInput) async throws -> String {
         "Preview: Your mood today looks steady."
     }
+    
     func generateChatResponse(conversation: [(isUser: Bool, text: String)]) async throws -> String {
         "Preview: I hear you. Take things one day at a time."
     }
@@ -31,12 +32,13 @@ struct HomeView: View {
     @State private var vm: HomeViewModel
     @Binding var selectedTab: Int
     
+    // MARK: - Greeting
+    @State private var timeBasedGreeting: String = "Good morning"
+    
     init(vm: HomeViewModel, selectedTab: Binding<Int>) {
         _vm = State(initialValue: vm)
         _selectedTab = selectedTab
     }
-    
-    @State private var timeBasedGreeting: String = "Good morning"
     
     private func updateGreeting() {
         let hour = Calendar.current.component(.hour, from: Date())
@@ -63,11 +65,13 @@ struct HomeView: View {
                 
                 ScrollView(.vertical, showsIndicators: false) {
                     VStack(spacing: 30) {
-                        Image("bubu")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 250, height: 150)
-                            .padding(.top, 2)
+                        BlobAvatarView(
+                            width: 150,
+                            height: 160,
+                            showShadow: true,
+                            animate: true
+                        )
+                        .padding(.top, 2)
                         
                         Text(greetingText)
                             .font(.title)
@@ -75,10 +79,13 @@ struct HomeView: View {
                             .foregroundStyle(Color.brandPrimary)
                             .padding(.top, -20)
                         
-                        Text("Let's unpack the day slowly.. together..")
+                        Text("Let's unpack the day slowly... together.")
                             .font(.subheadline)
                             .foregroundStyle(Color.brandPrimary)
                             .padding(.top, -20)
+                        
+                        AffirmationView()
+                            .padding(.horizontal, 22)
                         
                         MoodsSectionView(
                             moods: moods,
@@ -93,7 +100,7 @@ struct HomeView: View {
                         if vm.isGeneratingTodayInsight {
                             HStack(spacing: 10) {
                                 ProgressView()
-                                Text("Thinking…")
+                                Text("I’m here with you… just a moment.")
                                     .font(.footnote)
                                     .foregroundStyle(Color.brandPrimary)
                             }
@@ -101,10 +108,13 @@ struct HomeView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                         }
                         
-                        // AI bubble (always visible if you set default text)
+                        // AI bubble
                         if let insight = vm.todayInsightText, !insight.isEmpty {
                             VStack(spacing: 4) {
-                                AIInsightBubbleView(text: insight, avatarSystemImage: "person.crop.circle.fill")
+                                AIInsightBubbleView(
+                                    text: insight,
+                                    avatarSystemImage: "person.crop.circle.fill"
+                                )
                                 
                                 Button(action: {
                                     selectedTab = 1
@@ -121,18 +131,6 @@ struct HomeView: View {
                             }
                         }
                         
-                        // // Debug View - Remove it later!!!
-                        // if let dbg = vm.lastSavedDebugText {
-                        //     Text(dbg)
-                        //         .font(.footnote)
-                        //         .foregroundStyle(.black.opacity(0.7))
-                        //         .padding()
-                        //         .frame(maxWidth: .infinity, alignment: .leading)
-                        //         .background(.white.opacity(0.6))
-                        //         .clipShape(RoundedRectangle(cornerRadius: 14))
-                        //         .padding(.horizontal)
-                        // }
-                        
                         if let err = vm.lastError {
                             Text("Error: \(err)")
                                 .font(.footnote)
@@ -141,11 +139,11 @@ struct HomeView: View {
                         }
                     }
                     .padding(.top, 8)
-                    .padding(.bottom, 16) // small padding; real space comes from safeAreaInset below
+                    .padding(.bottom, 16)
                 }
-                // IMPORTANT: prevents scroll content being hidden under the Tab Bar
+                .scrollDismissesKeyboard(.interactively)
                 .safeAreaInset(edge: .bottom) {
-                    Color.clear.frame(height: 110) // adjust 90–120 if needed
+                    Color.clear.frame(height: 110)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
@@ -158,7 +156,9 @@ struct HomeView: View {
                                     .scaledToFill()
                                     .frame(width: 30, height: 30)
                                     .clipShape(Circle())
-                                    .overlay(Circle().stroke(Color.brandPrimary, lineWidth: 1))
+                                    .overlay(
+                                        Circle().stroke(Color.brandPrimary, lineWidth: 1)
+                                    )
                             } else {
                                 Image(systemName: "person.crop.circle")
                                     .font(.title2)
@@ -174,23 +174,30 @@ struct HomeView: View {
             .onAppear {
                 updateGreeting()
             }
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") {
+                        dismissKeyboard()
+                    }
+                }
+            }
         }
     }
+}
+
+#Preview {
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: MoodEntry.self, configurations: config)
+    let context = ModelContext(container)
     
-    #Preview {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        let container = try! ModelContainer(for: MoodEntry.self, configurations: config)
-        let context = ModelContext(container)
-        
-        let repo = SwiftDataMoodRepository(context: context)
-        
-        let vm = HomeViewModel(
-            moodRepo: repo,
-            aiService: PreviewAIInsightService(),
-            userID: "preview-user"
-        )
-        
-        HomeView(vm: vm, selectedTab: .constant(0))
-    }
+    let repo = SwiftDataMoodRepository(context: context)
     
+    let vm = HomeViewModel(
+        moodRepo: repo,
+        aiService: PreviewAIInsightService(),
+        userID: "preview-user"
+    )
+    
+    HomeView(vm: vm, selectedTab: .constant(0))
 }

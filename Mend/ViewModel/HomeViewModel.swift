@@ -77,7 +77,7 @@ final class HomeViewModel {
         guard !isGeneratingTodayInsight else { return }
 
         isGeneratingTodayInsight = true
-        todayInsightText = "Thinking…"   // show text immediately
+        todayInsightText = "I’m here with you… just a moment."   // show text immediately
         lastError = nil
 
         // Artificial pause so the user sees the loading state

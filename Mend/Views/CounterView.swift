@@ -29,10 +29,7 @@ struct CounterView: View {
             } else {
                 // Initial State
                 VStack(spacing: 30) {
-                    Image("bubu") // Placeholder for illustration if needed
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 200)
+                    BlobAvatarView(width: 220, height: 170)
                     
                     Text("Ready to take a step back?")
                         .font(.title2)

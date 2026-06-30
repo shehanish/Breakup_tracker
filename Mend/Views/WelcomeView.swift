@@ -10,10 +10,7 @@ struct WelcomeView: View {
             VStack(spacing: 30) {
                 Spacer()
                 
-                Image("bubu") // Placeholder for illustration
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 250)
+                BlobAvatarView(width: 200, height: 150)
                 
                 Text("Start Your Healing Journey")
                     .font(.title)

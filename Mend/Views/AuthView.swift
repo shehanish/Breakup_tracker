@@ -78,9 +78,16 @@ struct AuthView: View {
                         Spacer(minLength: 40)
                     }
                 }
+                .scrollDismissesKeyboard(.interactively)
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") {
+                        dismissKeyboard()
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Close") {
                         dismiss()

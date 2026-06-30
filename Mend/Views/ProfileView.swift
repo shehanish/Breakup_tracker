@@ -106,10 +106,17 @@ struct ProfileView: View {
                         .padding(.bottom, 40)
                     }
                 }
+                .scrollDismissesKeyboard(.interactively)
             }
             .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") {
+                        dismissKeyboard()
+                    }
+                }
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Close") {
                         dismiss()

@@ -47,16 +47,11 @@ struct ChatView: View {
                         }
                     }
                 }
+                .scrollDismissesKeyboard(.interactively)
                 
                 if vm.isThinking {
                     HStack {
-                        Image("bubu")
-                            .resizable()
-                            .scaledToFit()
-                            .scaleEffect(1.4) 
-                            .frame(width: 30, height: 30)
-                            .background(Color.white.opacity(0.8))
-                            .clipShape(Circle())
+                        BlobAvatarView(width: 34, height: 28, showShadow: false)
                             .padding(.bottom, 4)
                         
                         Text("typing...")
@@ -82,6 +77,10 @@ struct ChatView: View {
                         .environment(\.colorScheme, .light)
                         .lineLimit(1...5)
                         .autocorrectionDisabled()
+                        .submitLabel(.send)
+                        .onSubmit {
+                            Task { await vm.sendMessage() }
+                        }
 
                     Button(action: {
                         Task { await vm.sendMessage() }
@@ -102,6 +101,14 @@ struct ChatView: View {
                 .padding(.horizontal)
                 .padding(.top, 8)
                 .padding(.bottom, 4)
+            }
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") {
+                        dismissKeyboard()
+                    }
+                }
             }
         }
     }

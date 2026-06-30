@@ -39,6 +39,7 @@ struct ReportView: View {
                 }
             }
         }
+        .scrollDismissesKeyboard(.interactively)
         .task {
             await vm.loadWeekly()
         }
